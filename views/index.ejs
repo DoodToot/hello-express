@@ -52,7 +52,8 @@
                 <div class="card-body">
                   <h5 class="card-title"><%= productos[i].nombre %></h5>
                   <p class="card-text"><%= productos[i].precio %>€</p>
-                  <a href="#" class="btn btn-primary" style="background-color: rgb(34, 187, 110); border: none;">Comprar</a>
+                  <!-- Añadimos un link para direccionar cada producto a su página según la referencia (productos)-->
+                  <a href="productos/<%= productos[i].ref %>" class="btn btn-primary" style="background-color: rgb(34, 187, 110); border: none;">Comprar</a>
                 </div>
               </div>
             </div>

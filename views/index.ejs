@@ -6,7 +6,7 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-      <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: rgb(238, 28, 74);">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">Dood</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -40,7 +40,7 @@
           </form>
         </div>
       </nav>
-    <div class="jumbotron jumbotron-fluid">
+    <div class="jumbotron jumbotron-fluid" style="background-color: rgb(203, 235, 250);">
       <div class="container">
         <h1 class="display-4"><%= title %></h1>
         <p class="lead">Welcome to <%= title %></p>
@@ -51,7 +51,7 @@
                 <div class="card-body">
                   <h5 class="card-title"><%= productos[i].nombre %></h5>
                   <p class="card-text"><%= productos[i].precio %>€</p>
-                  <a href="#" class="btn btn-primary">Comprar</a>
+                  <a href="#" class="btn btn-primary" style="background-color: rgb(219, 30, 71); border: none;">Comprar</a>
                 </div>
               </div>
             </div>

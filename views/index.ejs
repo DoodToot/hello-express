@@ -47,8 +47,8 @@
         <div class="row">
           <% for (var i = 0; i < productos.length; i++) { %>
             <div class="col-4">
-              <div class="card" style="width: 18rem;">
-                <img class="card-img-top" src="images/<%= productos[i].imagen %>" alt="<%= productos[i].nombre %>" height="250em">
+              <div class="card" style="width: 18rem; margin-bottom: 2rem; border: 0.25rem solid rgb(184, 184, 184)">
+                <img class="card-img-top" src="images/<%= productos[i].imagen %>" alt="<%= productos[i].nombre %>">
                 <div class="card-body">
                   <h5 class="card-title"><%= productos[i].nombre %></h5>
                   <p class="card-text"><%= productos[i].precio %>€</p>

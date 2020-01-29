@@ -40,7 +40,7 @@
           </form>
         </div>
       </nav>
-    <div class="jumbotron jumbotron-fluid" style="background-color: rgb(203, 235, 250);">
+    <div class="jumbotron jumbotron-fluid" style="background-color: rgb(217, 219, 223);">
       <div class="container">
         <h1 class="display-4"><%= title %></h1>
         <p class="lead">Welcome to <%= title %></p>
@@ -48,10 +48,11 @@
           <% for (var i = 0; i < productos.length; i++) { %>
             <div class="col-4">
               <div class="card" style="width: 18rem;">
+                <img class="card-img-top" src="images/<%= productos[i].imagen %>" alt="<%= productos[i].nombre %>" height="250em">
                 <div class="card-body">
                   <h5 class="card-title"><%= productos[i].nombre %></h5>
                   <p class="card-text"><%= productos[i].precio %>€</p>
-                  <a href="#" class="btn btn-primary" style="background-color: rgb(219, 30, 71); border: none;">Comprar</a>
+                  <a href="#" class="btn btn-primary" style="background-color: rgb(34, 187, 110); border: none;">Comprar</a>
                 </div>
               </div>
             </div>

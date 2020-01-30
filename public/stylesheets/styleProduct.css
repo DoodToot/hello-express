@@ -1,0 +1,12 @@
+html {
+    margin: 2rem;
+}
+
+img.foto {
+    max-height: 24rem;
+    max-width: 100%;
+}
+
+div.info {
+    margin: 0 2rem;
+}

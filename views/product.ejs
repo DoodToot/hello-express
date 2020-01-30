@@ -16,8 +16,12 @@
         <h2> <%= producto.nombre %> </h2>
         <h3> <%= producto.precio %>€ </h3>
         <h4> <%= producto.existencias %> unidades disponibles </h4>
-        <h4> Referencia: #<%= producto.ref %># </h4>
-        <a href="#" class="btn btn-primary" style="background-color: rgb(34, 187, 110); border: none;"> Comprar </a>
+        <form action="/comprar" method="POST">
+          <input type="hidden" name="ref" value="<%= producto.ref %>">
+          <input class="btn btn-primary" style="background-color: rgb(45, 201, 123); border: none;" type="submit" value="Comprar"> 
+        </form>
+        
+        <!-- <a href="#" id ="comprar" class="btn btn-primary" style="background-color: rgb(34, 187, 110); border: none;"> Comprar </a> -->
       </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>

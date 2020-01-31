@@ -60,7 +60,7 @@ router.post('/login', function(req, res, next) {
   res.redirect ('/');
 } else {
   // si no, vuelve a cargar login para mostrar el error.
-  res.redirect ('/login')
+  res.render('login');
 }
 });
 

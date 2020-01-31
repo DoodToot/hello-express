@@ -2,7 +2,8 @@ var express = require('express');
 var router = express.Router();
 // require obtiene los elementos de la carpeta que se le indique ("AQUI"), siempre que tengan un module.exports
 // los mete dentro de la variable (productos) en este caso
-var productos = require("../models/products.js")
+var productos = require("../models/products.js");
+var usuarios = require("../models/users.js");
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Dood', productos });
@@ -37,7 +38,25 @@ router.post('/comprar', function(req, res, next) {
 });
 
 router.get('/login', function(req, res, next) {
-  res.render("login");
+  res.render('login');
+});
+// obtiene los datos del formulario en (req) y comprueba si los datos coinciden con algún usuario.
+// si coincide, genera una cookie y dirige a la página principal. Si no, vuelve a cargar login para mostrar el error.
+router.post('/login', function(req, res, next) {
+// const usuario = req.body.usuario;
+// const pass = req.body.pass;
+  // para seleccionar varios campos de un formulario, escribir el nombre de la constante que coincida con el del campo entre los paréntesis
+  // esto en javascript normal no funciona, es característico de express.
+  const {usuario, pass} = req.body;
+  const user = usuarios.find (function (u) {
+    // el mismo funcionamiento de un (if else) donde return devuelve true o false si se cumple o no lo que hay a continuación.
+    return (u.usuario==usuario && u.password==pass);
+  });
+  if (user) {
+  res.redirect ('/');
+} else {
+  res.redirect ('/login')
+}
 });
 
 module.exports = router;

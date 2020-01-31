@@ -1,3 +1,4 @@
+// express es un framework de node.js
 var express = require('express');
 var router = express.Router();
 // require obtiene los elementos de la carpeta que se le indique ("AQUI"), siempre que tengan un module.exports
@@ -6,7 +7,8 @@ var productos = require("../models/products.js");
 var usuarios = require("../models/users.js");
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Dood', productos });
+  const usuario = req.session.usuario;
+  res.render('index', { title: 'Dood', productos, usuario });
 });
 // creamos una nueva línea de (router) que direccione a /productos/:ref
 router.get('/productos/:ref', function (req, res, next) {
@@ -41,7 +43,6 @@ router.get('/login', function(req, res, next) {
   res.render('login');
 });
 // obtiene los datos del formulario en (req) y comprueba si los datos coinciden con algún usuario.
-// si coincide, genera una cookie y dirige a la página principal. Si no, vuelve a cargar login para mostrar el error.
 router.post('/login', function(req, res, next) {
 // const usuario = req.body.usuario;
 // const pass = req.body.pass;
@@ -53,8 +54,12 @@ router.post('/login', function(req, res, next) {
     return (u.usuario==usuario && u.password==pass);
   });
   if (user) {
+  // si coincide, genera una cookie 
+  req.session.usuario = usuario;
+  // y dirige a la página principal
   res.redirect ('/');
 } else {
+  // si no, vuelve a cargar login para mostrar el error.
   res.redirect ('/login')
 }
 });

@@ -43,7 +43,10 @@
     <div class="jumbotron jumbotron-fluid" style="background-color: rgb(217, 219, 223);">
       <div class="container">
         <h1 class="display-4"><%= title %></h1>
-        <p class="lead">Welcome to <%= title %></p>
+        <p class="lead"> Welcome to <%= title %></p>
+        <% if (usuario) { %>
+          <p class="lead"> Hola, <%= usuario %> </p>
+        <% } %>
         <div class="row">
           <% for (var i = 0; i < productos.length; i++) { %>
             <div class="col-4">

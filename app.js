@@ -2,8 +2,9 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
-var cookieSession = require('cookie-session')
+var cookieSession = require('cookie-session');
 var logger = require('morgan');
+const models = require('./models');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -19,8 +20,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(cookieSession({
-  name: 'session',
-  keys: ['0864297531','1357924680'],
+  name: 'campurriana',
+  keys: ['g5m86TxvcmtEnMFmDNh4jj&@', 'iVKn&HigkhM616ELT5gbY^Eg'],
   maxAge: 5 * 60 * 1000
 }));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -43,5 +44,6 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
 
 module.exports = app;

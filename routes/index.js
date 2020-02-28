@@ -1,67 +1,76 @@
-// express es un framework de node.js
 var express = require('express');
 var router = express.Router();
-// require obtiene los elementos de la carpeta que se le indique ("AQUI"), siempre que tengan un module.exports
-// los mete dentro de la variable (productos) en este caso
-var productos = require("../models/products.js");
-var usuarios = require("../models/users.js");
+// var users = require('../models/users.js');
+
+const { Producto } = require('../models');
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  const usuario = req.session.usuario;
-  res.render('index', { title: 'Dood', productos, usuario });
-});
-// creamos una nueva línea de (router) que direccione a /productos/:ref
-router.get('/productos/:ref', function (req, res, next) {
-  // indicamos que el ref de la dirección lo obtenemos de req (request)
-  const ref = req.params.ref;
-  console.log(ref);
-  // producto aisla la información del elemento que tenga el ref que buscamos
-  const producto = productos.find(function(p) {
-    return p.ref==ref;
-  });
-  console.log(producto);
-  if (producto)
-  // el render le indica que imprima el archivo product.ejs en esa dirección, y que utiliza la información recojida en (producto)
-  res.render('product', {producto});
-  else res.redirect('/error');
+  const username = req.session.username;
+  Producto.findAll().then(products => {
+    res.render('index', { title: 'The Jungle', username, products });
+  })
 });
 
-const cesta = []; // provisional
+// Pégina con los detalles de un producto, según su referencia.
 
-router.post('/comprar', function(req, res, next) {
-  const ref = req.params.ref;
-  const producto = productos.find(function(p) {
+router.get('/products/:ref', function (req, res, next) {
+  // Obtengo la referencia del producto a partir de la ruta
+  var ref = req.params.ref;
+  Producto.findOne({
+    where: {ref}
+  })
+  .then(product => {
+    if (product) {
+      // Pasamos los datos del producto a la plantilla
+      res.render('product', {product});
+    } else {
+      // Si no encontramos el producto con esa referencia, redirigimos a página de error.
+      res.redirect("/error");
+    }
+  })
+});
+
+var cesta = []; //provisional
+
+router.post("/comprar", function (req, res, next) {
+  const ref = req.body.ref;
+
+  // Busco entre los productos el que coincide con la referencia
+  const product = products.find(function(p) { 
     return p.ref==ref; 
   });
-  // añadimos el producto a la cesta
-  cesta.push(producto);
-  // nos lleva a la página principal
+
+  // Añadimos producto a la cesta
+  cesta.push(product);
+  // Redirigimos a página de productos
   res.redirect("/");
 });
 
-router.get('/login', function(req, res, next) {
-  res.render('login');
+router.get("/login", function (req, res, next) {
+  res.render("login");
 });
-// obtiene los datos del formulario en (req) y comprueba si los datos coinciden con algún usuario.
-router.post('/login', function(req, res, next) {
-// const usuario = req.body.usuario;
-// const pass = req.body.pass;
-  // para seleccionar varios campos de un formulario, escribir el nombre de la constante que coincida con el del campo entre los paréntesis
-  // esto en javascript normal no funciona, es característico de express.
-  const {usuario, pass} = req.body;
-  const user = usuarios.find (function (u) {
-    // el mismo funcionamiento de un (if else) donde return devuelve true o false si se cumple o no lo que hay a continuación.
-    return (u.usuario==usuario && u.password==pass);
+
+/**
+ * Procesamiento del formulario de login. Obtiene los datos del formulario en la
+ * petición (req) y comprueba si hay algún usuario con ese nombre y contraseña.
+ * Si coincide, genera una cookie y dirige a la página principal.
+ * Si no coincide, vuelve a cargar la página de login para mostrar un error.
+ */
+router.post("/login", function (req, res, next) {
+  const {username, password} = req.body;
+  const user = users.find(function (u) {
+    return (u.username == username && u.password == password);
   });
+
   if (user) {
-  // si coincide, genera una cookie 
-  req.session.usuario = usuario;
-  // y dirige a la página principal
-  res.redirect ('/');
-} else {
-  // si no, vuelve a cargar login para mostrar el error.
-  res.render('login');
-}
+    req.session.username = username;
+    res.redirect("/");
+  } else {
+    //TODO: inyectar mensaje de error en plantilla
+    res.render("login");
+  }
 });
 
 module.exports = router;
+

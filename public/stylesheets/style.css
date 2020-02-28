@@ -1,4 +1,12 @@
-img.card-img-top {
-    max-height: 12rem;
-    width: 100%;
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color:rgb(255, 0, 221);
+}
+
+img.product-photo {
+  width: 100%;
 }

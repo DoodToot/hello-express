@@ -2,13 +2,9 @@ const Sequelize = require('sequelize');
 const sequelize = require('./db');
 
 // Definimos el modelo para Pedido
-const Pedido = sequelize.define('pedido', {
-  /*nombre: Sequelize.STRING,
-  ref: Sequelize.INTEGER,
-  imagen: Sequelize.STRING,
-  precio: Sequelize.DECIMAL(10,2),
-  existencias: Sequelize.INTEGER,
-  descripcion: Sequelize.STRING*/
+const Pedido = sequelize.define('pedidos', {
+  estado: Sequelize.ENUM('PDTE_PAGO', 'PAGADO', 'CANCELADO', 'TRANSITO', 'COMPLETADO')
+  // Pendiente, Cancelado, Pagado, Enviado, Completado.
 });
 
 module.exports = Pedido;

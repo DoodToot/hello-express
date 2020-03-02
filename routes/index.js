@@ -1,8 +1,7 @@
 var express = require('express');
 var router = express.Router();
-// var users = require('../models/users.js');
 
-const { Producto } = require('../models');
+const { Producto, Usuario} = require('../models');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -26,7 +25,7 @@ router.get('/products/:ref', function (req, res, next) {
       res.render('product', {product});
     } else {
       // Si no encontramos el producto con esa referencia, redirigimos a página de error.
-      res.redirect("/error");
+      res.redirect('/error');
     }
   })
 });
@@ -58,17 +57,32 @@ router.get("/login", function (req, res, next) {
  * Si no coincide, vuelve a cargar la página de login para mostrar un error.
  */
 router.post("/login", function (req, res, next) {
-  const {username, password} = req.body;
-  const user = users.find(function (u) {
-    return (u.username == username && u.password == password);
-  });
+  // const {username, password} = req.body;
+  // const user = users.find(function (u) {
+  //   return (u.username == username && u.password == password);
+  // });
 
-  if (user) {
-    req.session.username = username;
-    res.redirect("/");
+  // if (user) {
+  //   req.session.username = username;
+  //   res.redirect("/");
+  // } else {
+  //   //TODO: inyectar mensaje de error en plantilla
+  //   res.render("login");
+  // }
+});
+
+router.post("/registro", function (req, res, next) {
+  const datos = req.body;
+  // Si las dos contraseñas coinciden:
+  if (datos.password == datos.rep_password) {
+    // Meter en la BD Usuario con los datos del formulario.
+    Usuario.create(datos)
+      .then(usuario => {
+        res.redirect("/login");    
+      });
   } else {
-    //TODO: inyectar mensaje de error en plantilla
-    res.render("login");
+    // Mostrar un error si no coinciden
+    res.redirect("/registro");
   }
 });
 

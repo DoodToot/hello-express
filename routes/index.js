@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-const { Producto, Usuario} = require('../models');
+const { Producto, Usuario, Carrito} = require('../models');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -32,22 +32,23 @@ router.get('/products/:ref', function (req, res, next) {
 
 var cesta = []; //provisional
 
+// Meter producto en el Carrito
 router.post("/comprar", function (req, res, next) {
-  const ref = req.body.ref;
-
-  // Busco entre los productos el que coincide con la referencia
-  const product = products.find(function(p) { 
-    return p.ref==ref; 
-  });
-
-  // Añadimos producto a la cesta
-  cesta.push(product);
-  // Redirigimos a página de productos
-  res.redirect("/");
+  const ref = req.body;
+  // Añadimos producto a Carrito
+  Carrito.create(ref)
+      .then(carrito => {
+        // Redirigimos a página de productos
+        res.redirect("/");   
+      });
 });
 
 router.get("/login", function (req, res, next) {
   res.render("login");
+});
+
+router.get("/registro", function (req, res, next) {
+  res.render("registro");
 });
 
 /**
@@ -56,19 +57,19 @@ router.get("/login", function (req, res, next) {
  * Si coincide, genera una cookie y dirige a la página principal.
  * Si no coincide, vuelve a cargar la página de login para mostrar un error.
  */
-router.post("/login", function (req, res, next) {
-  // const {username, password} = req.body;
-  // const user = users.find(function (u) {
-  //   return (u.username == username && u.password == password);
-  // });
 
-  // if (user) {
-  //   req.session.username = username;
-  //   res.redirect("/");
-  // } else {
-  //   //TODO: inyectar mensaje de error en plantilla
-  //   res.render("login");
-  // }
+router.post("/login", function (req, res, next) {
+  const {email, password} = req.body;
+  // buscar un usuario en la base de datos que tenga ese email y password
+  Usuario.findOne({where : {email, password}})
+    .then(usuario => {
+      if (usuario) {
+        req.session.usuarioId = usuario.id;
+        res.redirect("/");
+      } else {
+        res.render("login");
+      }
+    })
 });
 
 router.post("/registro", function (req, res, next) {

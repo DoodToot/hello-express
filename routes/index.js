@@ -81,7 +81,7 @@ router.post("/registro", function (req, res, next) {
   } else if (datos.email.length == 0) {
     res.render("registro", {datos, error: "Email no puede estar vacío"});
     // Añadimos la expresión regulada entre barras "/.../" y la comparamos con el string ".test(string)" 
-  } else if (/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(datos.email)) {
+  } else if (!/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(datos.email)) {
     res.render("registro", {datos, error: "La estructura del email no es la adecuada"});
   } else if (datos.password.length < 6) {
     res.render("registro", {datos, error: "Password debe tener 6 caracteres mínimo"});

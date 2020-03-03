@@ -48,7 +48,7 @@ router.get("/login", function (req, res, next) {
 });
 
 router.get("/registro", function (req, res, next) {
-  res.render("registro");
+  res.render("registro", {error: undefined});
 });
 
 /**
@@ -67,24 +67,30 @@ router.post("/login", function (req, res, next) {
         req.session.usuarioId = usuario.id;
         res.redirect("/");
       } else {
-        res.render("login");
+        res.redirect("/login");
       }
     })
 });
 
 router.post("/registro", function (req, res, next) {
   const datos = req.body;
-  // Si las dos contraseñas coinciden:
-  if (datos.password == datos.rep_password) {
+  if (datos.nombre.length == 0) {
+    res.render("registro", {datos, error: "Nombre no puede estar vacío"});
+  } else if (datos.apellidos.length == 0) {
+    res.render("registro", {datos, error: "Apellidos no puede estar vacío"});
+  } else if (datos.email.length == 0) {
+    res.render("registro", {datos, error: "Email no puede estar vacío"});
+  } else if (datos.password.length < 6) {
+    res.render("registro", {datos, error: "Password debe tener 6 caracteres mínimo"});
+  } else if (datos.password != datos.rep_password) {
+    res.render("registro", {datos, error: "Las contraseñas deben coincidir"});
+  } else {
     // Meter en la BD Usuario con los datos del formulario.
     Usuario.create(datos)
       .then(usuario => {
         res.redirect("/login");    
       });
-  } else {
-    // Mostrar un error si no coinciden
-    res.redirect("/registro");
-  }
+    }
 });
 
 module.exports = router;

@@ -48,7 +48,7 @@ router.get("/login", function (req, res, next) {
 });
 
 router.get("/registro", function (req, res, next) {
-  res.render("registro", {error: undefined});
+  res.render("registro", {error: undefined, datos:{} });
 });
 
 /**

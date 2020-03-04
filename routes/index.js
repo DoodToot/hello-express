@@ -7,10 +7,10 @@ const { Producto, Usuario, Carrito} = require('../models');
 router.get('/', function(req, res, next) {
   const username = req.session.username;
   Producto.findAll().then(products => {
-    res.render('index', { title: 'The Jungle', username, products });
+    res.render('index', { title: 'The Jungle', username, products })
   })
-});
-
+})
+*/*
 // Pégina con los detalles de un producto, según su referencia.
 
 router.get('/products/:ref', function (req, res, next) {
@@ -22,30 +22,43 @@ router.get('/products/:ref', function (req, res, next) {
   .then(product => {
     if (product) {
       // Pasamos los datos del producto a la plantilla
-      res.render('product', {product});
+      res.render('product', {product})
     } else {
       // Si no encontramos el producto con esa referencia, redirigimos a página de error.
-      res.redirect('/error');
+      res.redirect('/error')
     }
   })
-});
-
-var cesta = []; //provisional
+})
 
 // Meter producto en el Carrito
 router.post("/comprar", function (req, res, next) {
-  const ref = req.body;
+  const ref = req.body.ref;
+  const usuarioId= req.session.usuarioId;
   // Añadimos producto a Carrito
-  Carrito.create(ref)
-      .then(carrito => {
-        // Redirigimos a página de productos
-        res.redirect("/");   
-      });
-});
-
+  if (usuarioId) {
+    Producto.findOne({where: {ref}})
+    // Producto -> Sequelize
+    .then(producto => {
+      if (producto) {
+        // Añadimos el producto al carrito del usuario
+        Carrito.findOrCreate({where: {usuarioId}, defaults: {usuarioId}})
+        .then(([carrito, created]) => {
+          carrito.addProducto(producto)
+          .then(() => {
+            res.redirect("/");
+          })
+        })
+      } else {
+        res.render("error", {message: "No existe el producto solicitado"});
+      }
+    })
+  } else {
+    res.redirect("/login");
+  }
+})
 router.get("/login", function (req, res, next) {
-  res.render("login", {error: undefined});
-});
+  res.render("login", {error: undefined})
+})
 
 /**
  * Procesamiento del formulario de login. Obtiene los datos del formulario en la
@@ -57,48 +70,48 @@ router.get("/login", function (req, res, next) {
 router.post("/login", function (req, res, next) {
   const {email, password} = req.body;
   // buscar un usuario en la base de datos que tenga ese email y password
-  Usuario.findOne({where : {email, password}})
+  Usuario.findOne({where: {email, password}})
     .then(usuario => {
       if (usuario) {
         req.session.usuarioId = usuario.id;
         res.redirect("/");
       } else {
-        res.render("login", {error: "Ese usuario no existe"});
+        res.render("login", {error: "Ese usuario no existe"})
       }
     })
-});
+})
 
 router.get("/registro", function (req, res, next) {
   res.render("registro", {error: undefined, datos:{} });
-});
+})
 
 router.post("/registro", function (req, res, next) {
   const datos = req.body;
   if (datos.nombre.length == 0) {
-    res.render("registro", {datos, error: "Nombre no puede estar vacío"});
+    res.render("registro", {datos, error: "Nombre no puede estar vacío"})
   } else if (datos.apellidos.length == 0) {
-    res.render("registro", {datos, error: "Apellidos no puede estar vacío"});
+    res.render("registro", {datos, error: "Apellidos no puede estar vacío"})
   } else if (datos.email.length == 0) {
-    res.render("registro", {datos, error: "Email no puede estar vacío"});
+    res.render("registro", {datos, error: "Email no puede estar vacío"})
     // Añadimos la expresión regulada entre barras "/.../" y la comparamos con el string ".test(string)" 
   } else if (!/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(datos.email)) {
-    res.render("registro", {datos, error: "La estructura del email no es la adecuada"});
+    res.render("registro", {datos, error: "La estructura del email no es la adecuada"})
   } else if (datos.password.length < 6) {
-    res.render("registro", {datos, error: "Password debe tener 6 caracteres mínimo"});
+    res.render("registro", {datos, error: "Password debe tener 6 caracteres mínimo"})
   } else if (datos.password != datos.rep_password) {
-    res.render("registro", {datos, error: "Las contraseñas deben coincidir"});
+    res.render("registro", {datos, error: "Las contraseñas deben coincidir"})
   } else {
     // Meter en la BD Usuario con los datos del formulario.
     Usuario.create(datos)
       .then(usuario => {
-        res.redirect("/login");  
-      });
+        res.redirect("/login")
+      })
     }
-});
+})
 
 router.get("/carrito", function (req, res, next) {
-  res.render("carrito");
-});
+  res.render("carrito")
+})
 
 module.exports = router;
 

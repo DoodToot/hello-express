@@ -21,7 +21,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(cookieSession({
   name: 'campurriana',
-  keys: ['g5m86TxvcmtEnMFmDNh4jj&@', 'iVKn&HigkhM616ELT5gbY^Eg'],
+  keys: ['g5m86TxvcmtEnMFmagh4jj&@', 'iVKn&HigksdfM616ELT5gbY^Eg'],
   maxAge: 5 * 60 * 1000
 }));
 app.use(express.static(path.join(__dirname, 'public')));

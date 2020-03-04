@@ -1,17 +1,22 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <title> Carrito </title>
     <style>
-    table, th, td {
+    html {
+        margin-left: 5px;
+    }
+    h1 {
+        margin-left: 10px;
+    }
+    th, td {
         padding: 5px;
         border: 1px solid black;
         text-align: center;
     }
     th, td {
         width: 100px;
+        height: 34px;
     }
     th {
         background-color: rgb(196, 196, 196);
@@ -55,30 +60,26 @@
             <th> P/V </th>
             <th> Subtotal </th>
         </tr>
-    <% for %>
+    
         <tr>
-            <td> <%= %> </td>
-            <td> <%= %> </td>
-            <td> <%= %> </td>
-            <td> <%= %> </td>
-            <td> <%= %> </td>
-       </tr> 
-    <% } %>
+            <td>  </td>
+            <td>  </td>
+            <td>  </td>
+            <td>  </td>
+            <td>  </td>
+       </tr>
+    
         <tr>
             <td> Total </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td> <%= %> </td>
+            <td> </td>
+            <td> </td>
+            <td> </td>
+            <td> </td>
         </tr>
     </table>
     <a id="blue" href="/"> Seguir Comprando </a>
     <form action="/checkout" method="POST">
         <input type="submit" id="green" value="Finalizar compra">
     </form>
-
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-  </body>
+</body>
 </html>

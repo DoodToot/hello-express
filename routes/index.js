@@ -44,11 +44,7 @@ router.post("/comprar", function (req, res, next) {
 });
 
 router.get("/login", function (req, res, next) {
-  res.render("login");
-});
-
-router.get("/registro", function (req, res, next) {
-  res.render("registro", {error: undefined, datos:{} });
+  res.render("login", {error: undefined});
 });
 
 /**
@@ -67,9 +63,13 @@ router.post("/login", function (req, res, next) {
         req.session.usuarioId = usuario.id;
         res.redirect("/");
       } else {
-        res.redirect("/login");
+        res.render("login", {error: "Ese usuario no existe"});
       }
     })
+});
+
+router.get("/registro", function (req, res, next) {
+  res.render("registro", {error: undefined, datos:{} });
 });
 
 router.post("/registro", function (req, res, next) {
@@ -91,9 +91,13 @@ router.post("/registro", function (req, res, next) {
     // Meter en la BD Usuario con los datos del formulario.
     Usuario.create(datos)
       .then(usuario => {
-        res.redirect("/login");    
+        res.redirect("/login");  
       });
     }
+});
+
+router.get("/carrito", function (req, res, next) {
+  res.render("carrito");
 });
 
 module.exports = router;

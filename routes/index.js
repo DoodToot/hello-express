@@ -10,7 +10,6 @@ router.get('/', function(req, res, next) {
     res.render('index', { title: 'The Jungle', username, products })
   })
 })
-*/*
 // Pégina con los detalles de un producto, según su referencia.
 
 router.get('/products/:ref', function (req, res, next) {
@@ -41,12 +40,24 @@ router.post("/comprar", function (req, res, next) {
     .then(producto => {
       if (producto) {
         // Añadimos el producto al carrito del usuario
-        Carrito.findOrCreate({where: {usuarioId}, defaults: {usuarioId}})
+        Carrito.findOrCreate({where: {usuarioId}, include: [Producto], defaults: {usuarioId}})
         .then(([carrito, created]) => {
-          carrito.addProducto(producto)
-          .then(() => {
-            res.redirect("/");
-          })
+          var productos = carrito.productos;
+          var p = productos.find( p => p.ref == ref);
+          if (p) {
+            // el artículo ya está en el carrito, por lo que incrementamos su cantidad
+            p.productocarrito.increment({cantidad: 1})
+            .then(() => {
+              p.decrement({existencias: 1});
+              res.redirect("/");
+            })
+          } else {
+            carrito.addProducto(producto)
+            .then(() => {
+              p.decrement({existencias: 1});
+              res.redirect("/");
+            })
+          }
         })
       } else {
         res.render("error", {message: "No existe el producto solicitado"});
@@ -110,7 +121,16 @@ router.post("/registro", function (req, res, next) {
 })
 
 router.get("/carrito", function (req, res, next) {
-  res.render("carrito")
+  const usuarioId= req.session.usuarioId;
+  if (!usuarioId) {
+    res.redirect("/login");
+  } else {
+    Carrito.findOne({where: {usuarioId}, include: [Producto]})
+    .then(carrito => {
+      var productos = carrito.productos;
+      res.render("carrito", {productos});
+    })
+  }
 })
 
 module.exports = router;

@@ -26,7 +26,7 @@
     }
     a {
         float: left;
-        margin: 10px 10px 0 0;
+        margin: 20px 0 0 30px;
         padding: 2px;
         border: 1px solid rgb(29, 29, 29);
         color: black;
@@ -40,13 +40,17 @@
     }
     #green {
         float: left;
-        margin: 10px 10px 0 0;
-        padding: 2px;
+        margin: 20px 15px;
+        padding: 3.5px;
         border: 1px solid rgb(29, 29, 29);
         background-color: white;
     }
     #green:hover {
         background-color: rgb(139, 255, 110);
+    }
+    #tabla2{
+        float: left;
+        margin-top: 10px;
     }
     </style>
   </head>
@@ -57,24 +61,25 @@
             <th> Ref </th>
             <th> Nombre </th>
             <th> Unidades </th>
-            <th> P/V </th>
+            <th> P/U </th>
             <th> Subtotal </th>
         </tr>
-    
+    <% var total = 0 %>
+    <% for (var i = 0; i < productos.length; i++) { %>
         <tr>
-            <td>  </td>
-            <td>  </td>
-            <td>  </td>
-            <td>  </td>
-            <td>  </td>
+            <td> <%=productos[i].ref %> </td>
+            <td> <%=productos[i].nombre %> </td>
+            <td> <%=productos[i].productocarrito.cantidad %> </td>
+            <td> <%=productos[i].precio %> </td>
+            <td> <%=productos[i].precio * productos[i].productocarrito.cantidad %> </td>
+            <% total += productos[i].precio * productos[i].productocarrito.cantidad; %>
        </tr>
-    
+    <% } %>
+    </table>
+    <table id="tabla2">
         <tr>
             <td> Total </td>
-            <td> </td>
-            <td> </td>
-            <td> </td>
-            <td> </td>
+            <td> <%=total.toFixed(2) %> </td>
         </tr>
     </table>
     <a id="blue" href="/"> Seguir Comprando </a>

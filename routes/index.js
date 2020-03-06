@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-const { Producto, Usuario, Carrito} = require('../models');
+const { Producto, Usuario, Carrito, Pedido} = require('../models');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -10,8 +10,8 @@ router.get('/', function(req, res, next) {
     res.render('index', { title: 'The Jungle', username, products })
   })
 })
-// Pégina con los detalles de un producto, según su referencia.
 
+// Pégina con los detalles de un producto, según su referencia.
 router.get('/products/:ref', function (req, res, next) {
   // Obtengo la referencia del producto a partir de la ruta
   var ref = req.params.ref;
@@ -49,13 +49,13 @@ router.post("/comprar", function (req, res, next) {
             p.productocarrito.increment({cantidad: 1})
             .then(() => {
               p.decrement({existencias: 1});
-              res.redirect("/");
+              res.redirect("/carrito");
             })
           } else {
             carrito.addProducto(producto)
             .then(() => {
               p.decrement({existencias: 1});
-              res.redirect("/");
+              res.redirect("/carrito");
             })
           }
         })
@@ -90,6 +90,11 @@ router.post("/login", function (req, res, next) {
         res.render("login", {error: "Ese usuario no existe"})
       }
     })
+})
+
+router.get("/logout", function (req, res, next) {
+  req.session = null;
+  res.redirect("/");
 })
 
 router.get("/registro", function (req, res, next) {
@@ -133,5 +138,70 @@ router.get("/carrito", function (req, res, next) {
   }
 })
 
+router.post("/checkout", function (req, res, next) {
+  const usuarioId= req.session.usuarioId;
+  if (!usuarioId) {
+    res.redirect("/login");
+  } else {
+  const total = req.body.total;
+  // procesar pago de la cantidad total
+  Carrito.findOne({where: {usuarioId}, include: [Producto]})
+    .then(carrito => {
+      const productos = carrito.productos;
+      // VERSIÓN 3 (Every)
+      if (productos.every(p => p.existencias >= p.productocarrito.cantidad)) {
+        Pedido.create(productos)
+        .then(() => {
+          carrito.destroy(productos)
+          .then (() => {
+            res.render("checkout", {total});
+          })
+        })
+      } else {
+        // for (var i = 0; i < productos.length; i++) {
+        //   // metemos en hayExistencias (un Array) el resultado de la comparación (true o false)
+        //   productos[i].hayExistencias = productos[i].existencias >= productos[i].productocarrito.cantidad;
+        // }
+        res.render("carrito", {productos});
+      }
+      // VERSIÓN 2 (Función)
+      // function comprobarExistencias(p) {
+      //   for (var i = 0; i < p.length; i++) {
+      //     if (p[i].existencias) {
+      //       // que siga el bucle
+      //     } else {
+      //       return false;
+      //     }
+      //   }
+      //   return true;
+      // }
+      // if (comprobarExistencias(productos)) {
+      //   Pedido.create(productos)
+      //   .then(() => {
+      //     carrito.destroy(productos)
+      //     .then (() => {
+      //       res.render("checkout");
+      //     })
+      //   })
+      // } else {
+      //   res.render("error", {message: "No quedan existencias de algún producto"});
+      // }
+      // VERSIÓN 1 (Bucle)
+      // for (var i = 0; i < productos; i++) {
+      //   if (productos[i].existencias = 0) {
+      //       res.render("error", {message: "No quedan existencias de " + productos[i] + "."});
+      //   } else {
+      //     // crear el pedido para el usuario con los datos del carrito
+      //     Pedido.create(productos[i])
+      //     .then(() => {
+      //       carrito.destroy(productos[i])
+      //       .then (() => {
+      //       })
+      //     })
+      //   }
+      // }
+      // res.render("checkout", {total});
+    })
+  }
+})
 module.exports = router;
-

@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> Checkout </title>
+    </head>
+    <body>
+        <h1> El precio total de su compra es <%= total %>€ </h1>
+        <form action="/pagar" method="POST">
+            <input type="submit" value="Pagar">
+        </form>
+    </body>
+</html>

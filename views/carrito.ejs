@@ -31,22 +31,20 @@
         border: 1px solid rgb(29, 29, 29);
         color: black;
     }
-    #blue {
+    #return {
         color: black;
         text-decoration: none;
     }
-    #blue:hover {
-        background-color: rgb(109, 214, 255);
-    }
-    #green {
+    #finish {
         float: left;
         margin: 20px 15px;
         padding: 3.5px;
         border: 1px solid rgb(29, 29, 29);
         background-color: white;
     }
-    #green:hover {
-        background-color: rgb(139, 255, 110);
+    #return:hover, #finish:hover {
+        background-color: rgb(136, 136, 136);
+        color: white;
     }
     #tabla2{
         float: left;
@@ -69,11 +67,15 @@
         <tr>
             <td> <%=productos[i].ref %> </td>
             <td> <%=productos[i].nombre %> </td>
-            <td> <%=productos[i].productocarrito.cantidad %> </td>
-            <td> <%=productos[i].precio %> </td>
-            <td> <%=productos[i].precio * productos[i].productocarrito.cantidad %> </td>
-            <% total += productos[i].precio * productos[i].productocarrito.cantidad; %>
-       </tr>
+            <% if (productos[i].existencias >= productos[i].productocarrito.cantidad) { %>
+                <td> <%=productos[i].productocarrito.cantidad %> </td>
+                <td> <%=productos[i].precio %> </td>
+                <td> <%=productos[i].precio * productos[i].productocarrito.cantidad %> </td>
+                <% total += productos[i].precio * productos[i].productocarrito.cantidad; %>
+            <% } else { %>
+                <td colspan="3"> No hay existencias </td>
+            <% } %>
+        </tr>
     <% } %>
     </table>
     <table id="tabla2">
@@ -82,9 +84,10 @@
             <td> <%=total.toFixed(2) %> </td>
         </tr>
     </table>
-    <a id="blue" href="/"> Seguir Comprando </a>
+    <a id="return" href="/"> Seguir Comprando </a>
     <form action="/checkout" method="POST">
-        <input type="submit" id="green" value="Finalizar compra">
+        <input type="hidden" name="total" value="<%= total.toFixed(2) %>">
+        <input type="submit" id="finish" value="Finalizar compra">
     </form>
 </body>
 </html>

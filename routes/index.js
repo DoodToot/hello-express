@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-const { Producto, Usuario, Carrito, Pedido} = require('../models');
+const { Producto, Usuario, Carrito, Pedido, sequelize } = require('../models');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -143,65 +143,34 @@ router.post("/checkout", function (req, res, next) {
   if (!usuarioId) {
     res.redirect("/login");
   } else {
-  const total = req.body.total;
-  // procesar pago de la cantidad total
-  Carrito.findOne({where: {usuarioId}, include: [Producto]})
-    .then(carrito => {
-      const productos = carrito.productos;
-      // VERSIÓN 3 (Every)
-      if (productos.every(p => p.existencias >= p.productocarrito.cantidad)) {
-        Pedido.create(productos)
-        .then(() => {
-          carrito.destroy(productos)
-          .then (() => {
-            res.render("checkout", {total});
+    sequelize.transaction(t => {
+      return Carrito.findOne({where: {usuarioId}, include: [Producto]})
+      .then(carrito => {
+        const productos = carrito.productos;
+        // VERSIÓN 3 (Every)
+        if (productos.every(p => p.existencias >= p.productocarrito.cantidad)) {
+          return Pedido.create({usuarioId, estado: "PDTE_PAGO"})
+          .then(pedido => {
+            pedido.addProductos(productos, {transaction: t})
+            .then(() => carrito.removeProductos(productos))
+            .then(() => t.commit())
+            .then(() => res.redirect("/pedido/" + pedido.id))
           })
-        })
-      } else {
-        // for (var i = 0; i < productos.length; i++) {
-        //   // metemos en hayExistencias (un Array) el resultado de la comparación (true o false)
-        //   productos[i].hayExistencias = productos[i].existencias >= productos[i].productocarrito.cantidad;
-        // }
-        res.render("carrito", {productos});
-      }
-      // VERSIÓN 2 (Función)
-      // function comprobarExistencias(p) {
-      //   for (var i = 0; i < p.length; i++) {
-      //     if (p[i].existencias) {
-      //       // que siga el bucle
-      //     } else {
-      //       return false;
-      //     }
-      //   }
-      //   return true;
-      // }
-      // if (comprobarExistencias(productos)) {
-      //   Pedido.create(productos)
-      //   .then(() => {
-      //     carrito.destroy(productos)
-      //     .then (() => {
-      //       res.render("checkout");
-      //     })
-      //   })
-      // } else {
-      //   res.render("error", {message: "No quedan existencias de algún producto"});
-      // }
-      // VERSIÓN 1 (Bucle)
-      // for (var i = 0; i < productos; i++) {
-      //   if (productos[i].existencias = 0) {
-      //       res.render("error", {message: "No quedan existencias de " + productos[i] + "."});
-      //   } else {
-      //     // crear el pedido para el usuario con los datos del carrito
-      //     Pedido.create(productos[i])
-      //     .then(() => {
-      //       carrito.destroy(productos[i])
-      //       .then (() => {
-      //       })
-      //     })
-      //   }
-      // }
-      // res.render("checkout", {total});
+        } else {
+          for (var i = 0; i < productos.length; i++) {
+            // metemos en hayExistencias (un Array) el resultado de la comparación (true o false)
+            productos[i].hayExistencias = productos[i].existencias >= productos[i].productocarrito.cantidad;
+          }
+          res.render("carrito", {productos});
+        }
+      })
     })
   }
 })
+
+router.get("/pedido/:pedido.id", function (req, res, next) {
+  const pedidoId = req.params.pedido.id;
+  res.render("pedido");
+})
+
 module.exports = router;

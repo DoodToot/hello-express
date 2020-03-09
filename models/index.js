@@ -38,6 +38,7 @@ sequelize
   });
 
   module.exports = {
+      sequelize,
       Producto,
       Usuario,
       Carrito,

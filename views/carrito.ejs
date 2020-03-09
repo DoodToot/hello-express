@@ -50,6 +50,10 @@
         float: left;
         margin-top: 10px;
     }
+    #error{
+        background-color: rgb(240, 50, 66);
+        color: white;
+    }
     </style>
   </head>
   <body>
@@ -67,13 +71,13 @@
         <tr>
             <td> <%=productos[i].ref %> </td>
             <td> <%=productos[i].nombre %> </td>
-            <% if (productos[i].existencias >= productos[i].productocarrito.cantidad) { %>
+            <% if ((productos[i].existencias >= productos[i].productocarrito.cantidad)) { %>
                 <td> <%=productos[i].productocarrito.cantidad %> </td>
-                <td> <%=productos[i].precio %> </td>
-                <td> <%=productos[i].precio * productos[i].productocarrito.cantidad %> </td>
+                <td> <%=(productos[i].precio).toFixed(2) %> </td>
+                <td> <%=(productos[i].precio * productos[i].productocarrito.cantidad).toFixed(2) %> </td>
                 <% total += productos[i].precio * productos[i].productocarrito.cantidad; %>
             <% } else { %>
-                <td colspan="3"> No hay existencias </td>
+                <td id="error" colspan="3"> No hay existencias </td>
             <% } %>
         </tr>
     <% } %>
@@ -81,7 +85,7 @@
     <table id="tabla2">
         <tr>
             <td> Total </td>
-            <td> <%=total.toFixed(2) %> </td>
+            <td> <%=(total).toFixed(2) %> </td>
         </tr>
     </table>
     <a id="return" href="/"> Seguir Comprando </a>
